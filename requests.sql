@@ -48,6 +48,7 @@
 #1 вариант)
 #select * from exam where student_id in ("130078", "110246", "104512");
 #2 вариант)
+#select * from exam natural join subjects where student_id in ("130078", "110246", "104512");
 
 
 #15 (для оценки по информатике и зачеток с номерам 120212, 110245, 130056)
@@ -56,3 +57,5 @@
 #(select subject_id from subjects where subject_name = "информатика")
 #and student_id in ("120212", "110245", "130056");
 #2 вариант)
+#select * from exam natural join subjects 
+#where student_id in ("120212", "110245", "130056") and subject_name = "информатика";
