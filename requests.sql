@@ -12,7 +12,7 @@
 #select * from exam;
 
 #4
-#select * from students where group_num = 11;
+#select * from students where group_num = "11";
 
 #5
 #select * from students where lastname = "Иванов";
