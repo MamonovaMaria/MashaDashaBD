@@ -1,3 +1,6 @@
+#чтобы незаполненное значение в файле (пустая строчка) считалась как NULL, или false-значением
+SET SESSION sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+
 LOAD DATA LOCAL INFILE 'H:/tmp//students.txt' REPLACE INTO TABLE students
 CHARACTER SET cp1251;
 
