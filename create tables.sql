@@ -6,7 +6,7 @@ drop table if exists subjects;
 CREATE TABLE students (
     student_id VARCHAR(6) PRIMARY KEY,
     firstname VARCHAR(20) NOT NULL,
-    surname VARCHAR(20) NOT NULL,
+    middlename VARCHAR(20) NOT NULL,
     lastname VARCHAR(20) NOT NULL,
     group_num VARCHAR(2) NOT NULL,
     phone_num VARCHAR(12)
