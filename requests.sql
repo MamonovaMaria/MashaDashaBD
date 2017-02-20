@@ -34,6 +34,7 @@
 
 #11
 #select student_id from exam where mark = 2 group by student_id;
+#select firstname, lastname from students where student_id in (select student_id from exam where mark = 2 group by student_id);
 
 #12 (исправление - для номера зачетки 110245)
 #select * from exam where student_id = "110245";
