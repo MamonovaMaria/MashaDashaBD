@@ -6,17 +6,17 @@ drop table if exists subjects;
 CREATE TABLE students (
     student_id VARCHAR(6) PRIMARY KEY,
     firstname VARCHAR(20) NOT NULL,
-    middlename VARCHAR(20) NOT NULL,
+    surname VARCHAR(20) NOT NULL,
     lastname VARCHAR(20) NOT NULL,
     group_num VARCHAR(2) NOT NULL,
     phone_num VARCHAR(12)
-);
+)CHARACTER SET = UTF8;
 
 CREATE TABLE subjects (
     subject_id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     subject_name VARCHAR(50) NOT NULL,
     teacher_name VARCHAR(50) NOT NULL
-);
+)CHARACTER SET = UTF8;
 
 CREATE TABLE exam (
     student_id VARCHAR(6),
@@ -25,4 +25,4 @@ CREATE TABLE exam (
     FOREIGN KEY(student_id) REFERENCES students(student_id),
     FOREIGN KEY(subject_id) REFERENCES subjects(subject_id),
     PRIMARY KEY (student_id , subject_id)
-);
+)CHARACTER SET = UTF8;
