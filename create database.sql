@@ -1,1 +1,2 @@
-create database myDB
+create database myDB;
+use myDB;
