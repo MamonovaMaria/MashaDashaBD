@@ -2,23 +2,21 @@
 select * from students, subjects;
 
 #2
-select lastname,
-sum(case subject_name when subjects.subject_id then mark end) as subject_name
-from students join exam join subjects
-on subjects.subject_id is not null 
-and subject_name in (select subject_name from subjects) 
-group by lastname;
-
-select lastname, subject_name from 
+select lastname, subject_name, mark from students natural join subjects natural join exam 
+order by lastname;
 
 #3
-select lastname, subject_name, teacher_name from students natural join exam natural join subjects
-pivot(sum(mark) for subject_name);
+select lastname, subject_name, teacher_name, mark 
+from students natural join subjects natural join exam
+where mark >2;
 
 #4
 select teacher_name, subject_name, group_num 
-from students natural join exam natural join subjects
-where ;
+from subjects natural join  students natural join exam 
+where group_num in(select group_num from students where student_id in
+(select student_id from exam where subject_id in
+(select subject_id from subjects where subjects.teacher_name = teacher_name)))
+order by teacher_name;
 
 #5
 select * from students where group_num = 
@@ -26,7 +24,8 @@ select * from students where group_num =
 
 #6 для преподавателя Платонова---
 select teacher_name, subject_name from subjects
-where subject_name in(select subject_name from subjects where teacher_name = "Платонов\r");
+where subject_name in(select subject_name from subjects where teacher_name = "Платонов\r")
+and teacher_name != "Платонов\r";
 
 #7
 select count(student_id) as количество_студентов, subject_name as предмет 
@@ -35,7 +34,7 @@ where mark > 2 group by subject_name;
 
 #8
 select group_num, mark, count(mark)
-from students left join exam on students.student_id=exam.student_id group by group_num, mark;
+from students natural join exam group by group_num, mark;
 
 #9
 select group_num, avg(mark) from students natural join exam group by group_num;
@@ -58,24 +57,45 @@ group by student_id having avg(mark) >=4 ;
 
 #14 для студентки Федорчук
 #1)
-select student_id, firstname, lastname, subject_name, mark
+select subject_name, mark
 from students natural join exam natural join subjects
 where lastname = "Федорчук";
-#2)
-select mark, subject_id from exam where subject_id in
-(select subject_id from exam where student_id in
-(select student_id from students where lastname = "Федорчук"));
-
+#2)---
+select subject_id, mark from exam where subject_id in
+(select subject_id from exam where student_id =
+(select student_id from students where lastname = "Федорчук")) group by subject_id;
 
 #15 для Правоведова
+#1)
+select group_num from students natural join exam natural join subjects
+where teacher_name = "Правоведов\r" group by group_num;
+#2)
 select group_num from students where student_id in
 (select student_id from exam where subject_id in
 (select subject_id from subjects where teacher_name = "Правоведов\r")) group by group_num;
 
-#16
-#17
-#18
-#19
+#16 для Бабушкина Карла Мстиславовича
+#1)
+select subject_name, subject_id from students natural join exam natural join subjects
+where lastname = "Бабушкин";
+#2)
+select subject_name, subject_id from subjects where subject_id in
+(select subject_id from exam where student_id =
+(select student_id from students where lastname = "Бабушкин"));
 
-#, firstname, lastname, subject_name, mark
-#from students where (select subject_name from subjects) and (select mark from exam);
+#17
+select student_id, lastname, avg(mark) from students natural join exam
+group by student_id
+having avg(mark) > (select avg(mark) from exam where student_id = 
+(select student_id from students where lastname = "Федорчук"));
+
+#18 поняли как "меньше среднего"
+#select avg(mark) from exam;
+select subject_id, subject_name, avg(mark) from subjects natural join exam
+group by subject_id
+having avg(mark) < (select avg(mark) from exam) order by avg(mark);
+
+#19
+select group_num, avg(mark) from students natural join exam
+group by group_num
+having avg(mark) > (select avg(mark) from exam) order by avg(mark);
