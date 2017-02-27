@@ -19,11 +19,7 @@ select distinct firstname, lastname from students where (student_id not in (sele
 select distinct firstname, lastname from students where not exists (select student_id from exam where exam.student_id = students.student_id);
 
 #5 Вывести предметы, по которым данный студент хорошо сдал экзамены (т.е. оценка по которым лучше его среднего балла). Вывести №зачетки, предмет и оценку.
-select student_id, subject_name, mark from exam natural join subjects
-	where mark in (select mark from exam group by student_id having mark > avg(mark))
-    group by student_id, subject_id;
-
-select student_id, avg(mark) from exam group by student_id having avg(mark);
-select avg(mark) from exam group by student_id;
-
-select student_id, subject_name, mark from exam natural join subjects;
+select student_id, subject_name, mark from exam st1 natural join subjects
+	where mark > (select avg(mark) from exam st2 where st1.student_id=st2.student_id group by student_id)
+    group by student_id, subject_id
+    order by student_id, subject_name, mark desc;
