@@ -58,17 +58,42 @@ select distinct teacher_name from subjects t1
 				(select (sum(mark=5 and teacher_name = t1.teacher_name)) from exam natural join subjects) >= 
                 (select (sum(mark=5 and teacher_name like "Корнеев%")) from exam natural join subjects))
 		and teacher_name not like "Корнеев%";
-# Для проверки:    
-select teacher_name,  sum(mark=5) from exam natural join subjects group by teacher_name;
+#	Для проверки:    
+select teacher_name, sum(mark=5) from exam natural join subjects group by teacher_name;
 
-# 11	Вывести фамилии студентов и все их оценки по каждому предмету (написать 2 типа запроса: использовать  соединение и вложенный запрос в предложении Select)
+# 11	Вывести фамилии студентов и все их оценки по каждому предмету
+#		(написать 2 типа запроса: использовать соединение и вложенный запрос в предложении Select)
+select firstname, lastname, subject_name, teacher_name, mark from exam natural join students natural join subjects;
+select firstname, lastname, subject_name, teacher_name, mark from exam t1, students t2, subjects t3
+	where t1.student_id = t2.student_id and t1.subject_id = t3.subject_id;
 
-#12	Вывести фамилии преподавателей, кот. принимали экзамены у студентов  11 группы (написать 2 запроса, один с использованием предиката Exists)
+#12	Вывести фамилии преподавателей, кот. принимали экзамены у студентов 11 группы (написать 2 запроса, один с использованием предиката Exists)
+select distinct teacher_name from students natural join exam natural join subjects where (group_num = 11);
+select distinct teacher_name from subjects t1
+	where exists (select * from exam
+		where student_id in (select student_id from students where group_num = 11) and
+        subject_id in (select subject_id from subjects t2 where t1.teacher_name = t2.teacher_name));
 
-#13	Узнать, у студентов каких групп не принимал экзамен Макаров (написать 2 запроса, один с использованием предиката Exists)
+#13	Узнать, у студентов каких групп не принимал экзамен Правоведов (написать 2 запроса, один с использованием предиката Exists)
+select distinct group_num from students natural join exam natural join subjects
+	where group_num not in
+		(select distinct group_num from students natural join exam natural join subjects
+			where teacher_name like "Правоведов%");
 
-#14	Вывести фамилии преподавателей, поставивших больше, чем одну "двойку"  (написать 2 запроса)
+select distinct group_num from students t1 natural join exam natural join subjects
+	where not exists (select distinct group_num from students t2 natural join exam natural join subjects
+			where teacher_name like "Правоведов%" and t1.group_num = t2.group_num);
+
+#14	Вывести фамилии преподавателей, поставивших больше, чем одну "двойку" (написать 2 запроса)
+select distinct teacher_name from exam natural join subjects group by teacher_name having sum(mark=2) > 1;
+select distinct teacher_name from subjects t1
+	where 1 < (select count(case when mark=2 then 1 else null end) from exam
+		where subject_id in 
+			(select subject_id from subjects t2 where t1.teacher_name = t2.teacher_name));
+#	Для проверки
+select teacher_name, sum(mark=2) from exam natural join subjects group by teacher_name;
 
 #15	Вывести фамилии преподавателей, поставивших больше всего "двоек"
-
+select teacher_name from exam natural join subjects group by teacher_name
+	having sum(mark=2) = (select max(str1) from (select sum(mark=2) as str1 from exam natural join subjects name group by teacher_name) as t1);
 
