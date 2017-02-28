@@ -40,9 +40,9 @@ select (select subject_name from subjects t2 where t1.subject_id=t2.subject_id) 
 # 7	Вывести информацию о студентах, у кот. принимал экзамен Корнеев.
 #		Вывести № зачетки, предмет и оценку (написать 2 запроса, один с использованием предиката Exists).
 select student_id, subject_name, mark from exam natural join subjects
-	where subject_name in (select subject_name from subjects where teacher_name = "Корнеев\r");
+	where subject_name in (select subject_name from subjects where teacher_name = "Корнеев");
 select student_id, subject_name, mark from exam te, subjects ts
-	where exists (select subject_id from subjects t where teacher_name = "Корнеев\r"
+	where exists (select subject_id from subjects t where teacher_name = "Корнеев"
     and ts.subject_id = te.subject_id and t.subject_id = ts.subject_id);
     
 # 8	Вывести список студентов из группы, в кот. учится Федорчук (написать 3 запроса, один с пользованием предиката Exists)

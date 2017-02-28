@@ -15,7 +15,9 @@ CREATE TABLE students (
 CREATE TABLE subjects (
     subject_id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     subject_name VARCHAR(50) NOT NULL,
-    teacher_name VARCHAR(50) NOT NULL
+    teacher_name VARCHAR(50) NOT NULL,
+    teacher_firstname VARCHAR(50) NOT NULL,
+    teacher_midlename VARCHAR(50) NOT NULL
 )CHARACTER SET = UTF8;
 
 CREATE TABLE exam (
