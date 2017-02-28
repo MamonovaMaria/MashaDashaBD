@@ -11,10 +11,17 @@ from students natural join subjects natural join exam;
 
 #4
 select teacher_name, subject_name, group_num 
-from subjects natural join  students natural join exam 
+from subjects natural join students natural join exam 
 where group_num in(select group_num from students where student_id in
 (select student_id from exam where subject_id in
 (select subject_id from subjects where subjects.teacher_name = teacher_name)))
+order by teacher_name;
+
+select teacher_name, subject_name, group_num 
+from subjects natural join students natural join exam 
+where group_num in(select group_num from students where student_id in
+(select student_id from exam where subject_id in
+(select subject_id from subjects where subjects.teacher_name = teacher_name and subjects.subject_name=subject_name)))
 order by teacher_name;
 
 #5
@@ -62,7 +69,7 @@ where lastname = "Федорчук";
 #2)---
 select subject_name, mark from exam, subjects where exam.subject_id in
 (select subject_id from exam where student_id =
-(select student_id from students where lastname = "Федорчук")) group by subject_id;
+(select student_id from students where lastname = "Федорчук")) group by subjects.subject_id;
 
 #15 для Правоведова
 #1)
@@ -98,3 +105,8 @@ having avg(mark) = (select min(str1) from (select avg(mark) as str1 from exam gr
 select group_num, avg(mark) from students natural join exam
 group by group_num
 having avg(mark) > (select avg(mark) from exam) order by avg(mark);
+
+select group_num, avg(mark) from students natural join exam
+group by group_num
+having avg(mark) > (select avg(str1) from (select avg(mark) as str1 from exam natural join students group by group_num)
+as tab ) order by avg(mark);

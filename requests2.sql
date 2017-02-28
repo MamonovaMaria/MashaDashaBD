@@ -45,7 +45,11 @@ group by students.student_id;
 select student_id, firstname, lastname, count(mark) from exam natural join students group by student_id;
 
 #11
-select students.student_id, firstname, lastname, sum(mark)/count(mark) as средний_балл from students left join exam on students.student_id = exam.student_id group by student_id;
+select students.student_id, firstname, lastname, sum(mark)/count(mark) as средний_балл 
+from students left join exam on students.student_id = exam.student_id group by student_id;
+
+select students.student_id, firstname, lastname, sum(mark)/count(mark) as средний_балл 
+from students natural join exam group by student_id;
 
 #12
 select subject_name, avg(mark) as средний_балл, count(mark) as количество_оценок
@@ -73,14 +77,25 @@ select firstname, lastname, count(case when mark = 2  then 1 else null end) дв
 
 
 #16
-select group_num, count(student_id) as количесво_студентов_с_тел from students where phone_num is not null group by group_num;
+select group_num, count(student_id) as количесво_студентов_с_тел 
+from students where phone_num is not null group by group_num;
 
 #17
-select group_num, count(student_id) as студентов from students where group_num in (select group_num from students group by group_num having count(student_id) < 5) group by group_num;
+select group_num, count(student_id) as студентов 
+from students where group_num in
+(select group_num from students group by group_num having count(student_id) < 5) group by group_num;
+
+select group_num, count(student_id) as студентов 
+from students group by group_num having count(student_id) < 5;
+
 
 #18
-select group_num, subject_name, avg(mark) as средняя_оценка from students natural join subjects natural join exam group by group_num, subject_name;
+select group_num, subject_name, avg(mark) as средняя_оценка 
+from students natural join subjects natural join exam group by group_num, subject_name;
 
 
 #19
-select student_id, firstname, lastname, group_num, mark as английский from students natural join exam where (subject_id in (select subject_id from subjects where subject_name = "иностранный")) order by mark desc limit 0,3;
+select student_id, firstname, lastname, group_num, mark as английский 
+from students natural join exam 
+where (subject_id in (select subject_id from subjects where subject_name = "иностранный")) 
+order by mark desc limit 0,3;

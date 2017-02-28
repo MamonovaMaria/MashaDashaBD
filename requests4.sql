@@ -11,12 +11,15 @@ select distinct firstname, lastname from students where exists (select * from ex
 # select distinct student_id, mark from exam where mark = 5;
 
 # 3	Список студентов, сдавших больше 1 экзамена (2 способа: использовать вложенный запрос и группировку)
-select distinct firstname, lastname from students where (student_id in (select student_id from exam group by student_id having count(subject_id)>1));
-select distinct firstname, lastname from students where exists (select student_id from exam where exam.student_id = students.student_id group by student_id having count(subject_id)>1);
+select distinct firstname, lastname from students
+	where (student_id in (select student_id from exam group by student_id having count(subject_id)>1));
+select distinct firstname, lastname from students
+	where exists (select student_id from exam where exam.student_id = students.student_id having count(subject_id)>1);
 
 # 4	Список студентов, не сдававших ни одного экзамена (написать 2 запроса)
 select distinct firstname, lastname from students where (student_id not in (select distinct student_id from exam));
-select distinct firstname, lastname from students where not exists (select student_id from exam where exam.student_id = students.student_id);
+select distinct firstname, lastname from students
+	where not exists (select student_id from exam where exam.student_id = students.student_id);
 
 # 5	Вывести предметы, по которым данный студент хорошо сдал экзамены (т.е. оценка по которым лучше его среднего балла). Вывести №зачетки, предмет и оценку.
 select student_id, subject_name, mark from exam st1 natural join subjects
@@ -29,13 +32,18 @@ select student_id, subject_name, mark from exam st1 natural join subjects
 select subject_name, teacher_name, lastname, mark from subjects natural join exam natural join students;
 select subject_name, teacher_name, lastname, mark from students, subjects, exam
 	where (subjects.subject_id = exam.subject_id and students.student_id = exam.student_id);
+select (select subject_name from subjects t2 where t1.subject_id=t2.subject_id) as subj,
+	   (select teacher_name from subjects t3 where t1.subject_id=t3.subject_id) as teacher,
+	   (select lastname from students t4 where t4.student_id = t1.student_id) as student,
+       mark from exam t1;
     
 # 7	Вывести информацию о студентах, у кот. принимал экзамен Корнеев.
 #		Вывести № зачетки, предмет и оценку (написать 2 запроса, один с использованием предиката Exists).
 select student_id, subject_name, mark from exam natural join subjects
 	where subject_name in (select subject_name from subjects where teacher_name = "Корнеев\r");
 select student_id, subject_name, mark from exam te, subjects ts
-	where exists (select subject_id from subjects t where teacher_name = "Корнеев\r" and ts.subject_id = te.subject_id and t.subject_id = ts.subject_id);
+	where exists (select subject_id from subjects t where teacher_name = "Корнеев\r"
+    and ts.subject_id = te.subject_id and t.subject_id = ts.subject_id);
     
 # 8	Вывести список студентов из группы, в кот. учится Федорчук (написать 3 запроса, один с пользованием предиката Exists)
 select firstname, lastname from students
@@ -47,9 +55,11 @@ select firstname, lastname from students t1
 
 # 9	Вывести фамилии преподавателей, кот. принимали более, чем 1 экзамен. (написать 2 запроса)
 select distinct teacher_name from subjects t1
-	where exists (select * from exam natural join subjects group by teacher_name having count(distinct subject_id) > 1 and teacher_name = t1.teacher_name);
+	where exists (select * from exam natural join subjects group by teacher_name
+				  having count(distinct subject_id) > 1 and teacher_name = t1.teacher_name);
 select distinct teacher_name from subjects
-	where teacher_name in (select teacher_name from exam natural join subjects group by teacher_name having count(distinct subject_id) > 1);
+	where teacher_name in (select teacher_name from exam natural join subjects group by teacher_name
+    having count(distinct subject_id) > 1);
     
 # 10	Вывести информацию о преподавателях, кот. поставили столько же или больше оценок 'пять', чем Корнеев
 select distinct teacher_name from subjects t1
@@ -66,6 +76,10 @@ select teacher_name, sum(mark=5) from exam natural join subjects group by teache
 select firstname, lastname, subject_name, teacher_name, mark from exam natural join students natural join subjects;
 select firstname, lastname, subject_name, teacher_name, mark from exam t1, students t2, subjects t3
 	where t1.student_id = t2.student_id and t1.subject_id = t3.subject_id;
+select (select lastname from students t2 where t2.student_id = t1.student_id) as stud,
+	   (select subject_name from subjects t3 where t3.subject_id = t1.subject_id) as subj,
+       (select teacher_name from subjects t4 where t4.subject_id = t1.subject_id) as teach,
+       mark from exam t1;
 
 #12	Вывести фамилии преподавателей, кот. принимали экзамены у студентов 11 группы (написать 2 запроса, один с использованием предиката Exists)
 select distinct teacher_name from students natural join exam natural join subjects where (group_num = 11);
